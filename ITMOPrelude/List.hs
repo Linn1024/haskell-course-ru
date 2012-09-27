@@ -20,44 +20,60 @@ data List a = Nil |  Cons a (List a) deriving (Show,Read)
 
 -- Длина списка
 length :: List a -> Nat
-length = undefined
+length Nil = Zero
+length (Cons (_)(a)) = (Succ (length a))
 
 -- Склеить два списка за O(length a)
 (++) :: List a -> List a -> List a
-a ++ b = undefined
+Nil ++ a = a
+(Cons a ab) ++ x  = (Cons a $ ab ++ x)  
 
 -- Список без первого элемента
 tail :: List a -> List a
-tail = undefined
+tail (Cons a ab)= ab 
 
 -- Список без последнего элемента
 init :: List a -> List a
-init = undefined
+init (Cons a Nil) = Nil
+int (Cons a ab) = (Cons a $ init ab)
 
 -- Первый элемент
 head :: List a -> a
-head = undefined
+head (Cons a ab)= a
 
 -- Последний элемент
 last :: List a -> a
-last = undefined
+last (Cons a Nil) = a
+last (Cons a ab) = last ab  
 
 -- n первых элементов списка
 take :: Nat -> List a -> List a
-take = undefined
+take Zero _ = Nil
+take _ Nil = Nil
+take (Succ n) (Cons a ab) = (Cons a) (take (n) ab)
 
 -- Список без n первых элементов
 drop :: Nat -> List a -> List a
-drop = undefined
+drop Zero ab= ab
+drop _ Nil= Nil
+drop (Succ n)(Cons a ab) = drop n ab
+
+
 
 -- Оставить в списке только элементы удовлетворяющие p
 filter :: (a -> Bool) -> List a -> List a
-filter p = undefined
+filter p Nil = Nil
+filter p (Cons a ab) = case p a of
+	True -> Cons a (filter p ab)
+	False ->(filter p ab)
 
 -- Обобщённая версия. Вместо "выбросить/оставить" p
 -- говорит "выбросить/оставить b".
 gfilter :: (a -> Maybe b) -> List a -> List b
-gfilter p = undefined
+gfilter p Nil = Nil
+gfilter p (Cons a ab) = case p a of
+	Just b-> Cons b (gfilter p ab)
+	Nothing ->(gfilter p ab)
 
 -- Копировать из списка в результат до первого нарушения предиката
 -- takeWhile (< 3) [1,2,3,4,1,2,3,4] == [1,2]
